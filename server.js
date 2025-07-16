@@ -67,6 +67,30 @@ app.put(
   }
 );
 
+// delete a book
+app.delete(
+  "/api/books/:id",
+  (req, res, next) => {
+    // id virification
+    const parsedId = parseInt(req.params.id);
+    if (isNaN(parsedId)) {
+      return res.sendStatus(400);
+    }
+    const bookIndex = DB.books.findIndex((book) => book.id === parsedId);
+    if (bookIndex === -1) {
+      return res.sendStatus(404);
+    }
+
+    req.bookindex = bookIndex;
+
+    next();
+  },
+  (req, res) => {
+    DB.books.splice(req.bookindex, 1);
+    return res.sendStatus(200);
+  }
+);
+
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
