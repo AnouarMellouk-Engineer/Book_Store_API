@@ -2,7 +2,15 @@ const express = require("express");
 const app = express();
 const DB = require("./src/utils/data");
 const bookValidate = require("./src/middlwares.js/BookValidation");
-const PORT = 3000;
+const connect = require("./src/utils/connectDB.js");
+const addBook = require("./src/models/Book.js");
+const PORT = process.env.PORT || 3000;
+const database = process.env.DATABASE || "mongodb://127.0.0.1:27017/bookStore";
+
+// test DB
+connect(database);
+addBook();
+
 app.use(express.json());
 
 // retrieve all books
