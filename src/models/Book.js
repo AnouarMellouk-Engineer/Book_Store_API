@@ -1,19 +1,3 @@
-// this is local data :
-//   Books : {
-//       id: 1,
-//       title: "Clean Code",
-//       authorId: 1,
-//       categoryId: 1,
-//       price: 35.99,
-//       stock: 10,
-//       rating: 4.8,
-//       publishedYear: 2008,
-//       description: "A Handbook of Agile Software Craftsmanship",
-//     }
-//  author :{ id: 1, name: "Robert C. Martin" }
-// category :{ id: 1, name: "Programming" }
-
-// using mongoose and mongoDB
 const mongoose = require("mongoose");
 
 const BookSchema = new mongoose.Schema({
@@ -29,32 +13,44 @@ const BookSchema = new mongoose.Schema({
   publishedYear: { type: Number, required: true, min: 1900 },
   description: String,
 });
-
 const Book = mongoose.model("book", BookSchema);
 
-const addBook = async () => {
-  const book1 = new Book({
-    id: 1,
-    title: "Clean Code",
-    author: {
-      name: "Robert C. Martin",
-      age: 31,
-    },
-    category: "Programming",
-    price: 35.99,
-    stock: 10,
-    rating: 4.8,
-    publishedYear: 2008,
-    description: "A Handbook of Agile Software Craftsmanship",
-  });
-
-  try {
-    const result = await book1.save();
-    console.log("adding books completed");
-    console.log(result);
-  } catch (error) {
-    console.log(error);
-  }
+const addBook = async (book) => {
+  const book1 = new Book(book);
+  const result = await book1.save();
+  return result;
 };
 
-module.exports = addBook;
+const allBooks = async () => {
+  return await Book.find();
+};
+
+const getBookById = async (id) => {
+  return await Book.findById(id);
+};
+
+const updateBook = async (id, data) => {
+  await Book.updateOne({ _id: id }, data);
+};
+
+const updateBooks = async (condition, data) => {
+  await Book.updateMany(condition, data);
+};
+
+const deleteBook = async (id) => {
+  await Book.deleteOne({ _id: id });
+};
+
+const deleteBooks = async (condition) => {
+  await Book.deleteMany(condition);
+};
+
+module.exports = {
+  allBooks,
+  addBook,
+  getBookById,
+  updateBooks,
+  updateBook,
+  deleteBook,
+  deleteBooks,
+};
